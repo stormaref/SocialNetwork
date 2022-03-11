@@ -5,7 +5,6 @@ using Microsoft.IdentityModel.Tokens;
 using SocialNetwork.Infrastructure.Entities;
 using SocialNetwork.Infrastructure.Persistence;
 using SocialNetwork.Services;
-using System;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);

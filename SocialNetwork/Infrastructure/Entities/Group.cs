@@ -1,5 +1,4 @@
-﻿using System;
-namespace SocialNetwork.Infrastructure.Entities
+﻿namespace SocialNetwork.Infrastructure.Entities
 {
     public class Group : BaseEntity
     {
