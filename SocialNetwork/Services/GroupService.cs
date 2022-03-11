@@ -43,7 +43,7 @@ namespace SocialNetwork.Services
                 .SingleOrDefaultAsync(g => g.Id == user.GroupId.Value);
 
             var members = group.Members
-                .OrderBy(m => m.JoinDate)
+                .OrderByDescending(m => m.JoinDate)
                 .Select(m => new MemberDto(m.Id, m.Name, m.Email, m.Id == group.AdminId ? "Owner" : "Normal"))
                 .ToList();
 
@@ -67,7 +67,7 @@ namespace SocialNetwork.Services
         public async Task<GetGroupsResponse> All()
         {
             var groups = await _context.Groups
-                .OrderBy(g => g.CreationDate)
+                .OrderByDescending(g => g.CreationDate)
                 .Select(g => new GroupDto(g.Id, g.Name, g.Description))
                 .ToListAsync();
             return new GetGroupsResponse(groups);

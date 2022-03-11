@@ -64,7 +64,7 @@ namespace SocialNetwork.Services
 
             var dtos = await _context.JoinRequests
                 .Where(j => j.GroupId == group.Id)
-                .OrderBy(j => j.CreationDate)
+                .OrderByDescending(j => j.CreationDate)
                 .Select(j => new JoinRequestDto(j.Id, j.UserId, j.GroupId, j.Date))
                 .ToListAsync();
 
@@ -75,7 +75,7 @@ namespace SocialNetwork.Services
         {
             var dtos = await _context.JoinRequests
                 .Where(j => j.UserId == userId)
-                .OrderBy(j => j.CreationDate)
+                .OrderByDescending(j => j.CreationDate)
                 .Select(j => new JoinRequestDto(j.Id, j.UserId, j.GroupId, j.Date))
                 .ToListAsync();
 

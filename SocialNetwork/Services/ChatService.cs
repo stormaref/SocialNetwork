@@ -25,7 +25,7 @@ namespace SocialNetwork.Services
         {
             var chats = await _context.Chats
                 .Where(c => c.FirstUserId == userId || c.SecondUserId == userId)
-                .OrderBy(c => c.CreationDate)
+                .OrderByDescending(c => c.CreationDate)
                 .ToListAsync();
 
             List<ChatsDto> ChatsDto = new List<ChatsDto>();
@@ -62,7 +62,7 @@ namespace SocialNetwork.Services
 
             var dtos = chat.Messages
                 .Select(m => new MessagesDto(m.Body, m.Date, m.SenderId))
-                .OrderBy(m => m.Date)
+                .OrderByDescending(m => m.Date)
                 .ToList();
 
             return new MessagesVm(dtos);
