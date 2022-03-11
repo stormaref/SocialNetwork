@@ -98,7 +98,7 @@ namespace SocialNetwork.Services
             if (!him.GroupId.HasValue)
                 return false;
             var isConnected = await _groupService.IsConnected(myGroup, him.GroupId.Value);
-            if (!isConnected)
+            if ((myGroup.Id != him.GroupId.Value) && !isConnected)
                 return false;
             var chat = new Chat(myUserId, targetUserId, new Message(myUserId, targetUserId, message));
             _context.Chats.Add(chat);
