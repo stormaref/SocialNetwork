@@ -50,6 +50,7 @@ namespace SocialNetwork.Services
 
             var dtos = await _context.ConnectionRequests
                 .Where(c => c.ReceiverGroupId == group.Id)
+                .OrderBy(c => c.CreationDate)
                 .Select(c => new ConnectionRequestDto(c.Id, c.SenderGroupId, c.Sent))
                 .ToListAsync();
 

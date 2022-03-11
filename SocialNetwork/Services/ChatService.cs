@@ -25,6 +25,7 @@ namespace SocialNetwork.Services
         {
             var chats = await _context.Chats
                 .Where(c => c.FirstUserId == userId || c.SecondUserId == userId)
+                .OrderBy(c => c.CreationDate)
                 .ToListAsync();
 
             List<ChatsDto> ChatsDto = new List<ChatsDto>();
