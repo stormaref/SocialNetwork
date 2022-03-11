@@ -44,7 +44,7 @@ namespace SocialNetwork.Services
 
             var members = group.Members
                 .OrderBy(m => m.JoinDate)
-                .Select(m => new MemberDto(m.Id, m.Name, m.Email, m.Id == group.AdminId ? "Owner" : "User"))
+                .Select(m => new MemberDto(m.Id, m.Name, m.Email, m.Id == group.AdminId ? "Owner" : "Normal"))
                 .ToList();
 
             return new UserGroupDto(group.Name, group.Description, members);
