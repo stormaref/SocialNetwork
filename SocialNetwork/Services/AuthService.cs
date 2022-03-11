@@ -8,19 +8,20 @@ using SocialNetwork.Infrastructure.Entities;
 
 namespace SocialNetwork.Services
 {
-    public interface IUserService
+    public interface IAuthService
     {
+        Task<ApplicationUser> GetUser(int userId);
         Task<(bool succeeded, string token)> Login(string username, string password);
         Task<(bool succeeded, string token, string error)> SignUp(string username, string password, string name);
     }
 
-    public class UserService : IUserService
+    public class AuthService : IAuthService
     {
         private readonly IConfiguration _configuration;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public UserService(IConfiguration configuration, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AuthService(IConfiguration configuration, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _configuration = configuration;
             _userManager = userManager;
@@ -77,7 +78,11 @@ namespace SocialNetwork.Services
                 expires: DateTime.Now.AddDays(30), signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
         }
-    }
 
+        public async Task<ApplicationUser> GetUser(int userId)
+        {
+            return await _userManager.FindByIdAsync(userId.ToString());
+        }
+    }
 }
 

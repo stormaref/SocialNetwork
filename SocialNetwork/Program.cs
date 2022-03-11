@@ -10,15 +10,18 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<IRequestService, RequestService>();
+builder.Services.AddScoped<IConnectionService, ConnectionService>();
 
 builder.Services.AddAuthorization();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
 {
     opt.TokenValidationParameters = new()
@@ -33,12 +36,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
+
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
-    options.UseInMemoryDatabase("InMemory");
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(config =>
+builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>(config =>
 {
     config.Password.RequiredLength = 4;
     config.Password.RequireDigit = false;
@@ -46,9 +50,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(config =>
     config.Password.RequireUppercase = false;
     config.SignIn.RequireConfirmedEmail = false;
     config.Password.RequireLowercase = false;
-    config.SignIn.RequireConfirmedPhoneNumber = true;
+    config.SignIn.RequireConfirmedPhoneNumber = false;
 })
-     .AddEntityFrameworkStores<DatabaseContext>()
+    .AddEntityFrameworkStores<DatabaseContext>()
     .AddDefaultTokenProviders();
 
 var app = builder.Build();
@@ -60,10 +64,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<DatabaseContext>();
+context.Database.Migrate();
+
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
 app.UseAuthorization();
+app.UseAuthentication();
 
 app.MapControllers();
 

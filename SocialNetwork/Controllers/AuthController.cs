@@ -1,14 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
+using SocialNetwork.Models;
 using SocialNetwork.Services;
 
 namespace SocialNetwork.Controllers
 {
+    [Route("api/v1/auth")]
+    [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IAuthService _userService;
 
-        public AuthController(IUserService userService)
+        public AuthController(IAuthService userService)
         {
             _userService = userService;
         }
@@ -26,7 +29,7 @@ namespace SocialNetwork.Controllers
             {
                 return BadRequest(new ErrorResponse("Username or password is wrong"));
             }
-            return Ok(result.token);
+            return Ok(new SignUpResponse(result.token, "successfull"));
         }
 
         [HttpPost("signup")]
@@ -42,7 +45,7 @@ namespace SocialNetwork.Controllers
             {
                 return BadRequest(new ErrorResponse(result.error));
             }
-            return Ok(result.token);
+            return Ok(new SignUpResponse(result.token, "successfull"));
         }
     }
 }
@@ -59,31 +62,19 @@ public class SignUpRequest
     public string Password { get; set; }
 }
 
-public class SignUpResponse : LoginRequest
+public class SignUpResponse
 {
+    public SignUpResponse(string token, string message)
+    {
+        Token = token;
+        Message = message;
+    }
+
     public string Token { get; set; }
     public string Message { get; set; }
 }
 
-public class ErrorResponse
-{
-    public ErrorResponse(string error)
-    {
-        Error = new Error(error);
-    }
-    public Error Error { get; set; }
-}
 
-public class Error
-{
-
-    public string EnMessage { get; set; }
-
-    public Error(string enMessage)
-    {
-        EnMessage = enMessage;
-    }
-}
 
 public class LoginRequest
 {
